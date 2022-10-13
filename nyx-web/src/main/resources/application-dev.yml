@@ -1,0 +1,4 @@
+app:
+  env: dev
+  id: chint-nyx
+  meta: https://cc-config.chintcloud.net/

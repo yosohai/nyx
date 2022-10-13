@@ -1,0 +1,136 @@
+application:
+  version: 1.0.0
+  formatted-version: V1.0.0
+  title: Nyx
+  package: com.chint
+server:
+  port: 8099
+  servlet:
+    context-path: /
+    session:
+      timeout: 300m #session生命周期
+spring:
+  kafka:
+    # 指定 kafka 地址，我这里在本地，直接就 localhost, 若外网地址，注意修改【PS: 可以指定多个】
+    #    bootstrap-servers: localhost:9092
+    bootstrap-servers: 10.20.200.235:9092,10.20.200.236:9092,10.20.200.237:9092
+    consumer:
+      # 指定 group_id
+      group-id: group_id
+      auto-offset-reset: earliest
+      # 指定消息key和消息体的编解码方式
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      acks: 1
+      batch-size: 16384
+      # 指定消息key和消息体的编解码方式
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        linger:
+          ms: 0
+      retries: 0
+  messages:
+    encoding: UTF-8
+  application:
+    name: Nyx
+  banner:
+    charset: utf-8
+    location: banner.txt
+  datasource:
+    dynamic:
+      primary: master_1 #设置默认的数据源或者数据源组,默认值即为master
+      strict: false
+      datasource:
+        # 支持不同数据库不同数据源
+        master_1:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://10.20.200.137:3306/nyx?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=Asia/Shanghai
+          username: root
+          password: m#anq9eFiMZl
+        master_2:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://10.20.200.137:3306/nyx1?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=Asia/Shanghai
+          username: root
+          password: m#anq9eFiMZl
+        linkerdb:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://10.20.200.137:3306/linkerdb?characterEncoding=utf8&useAffectedRows=true&useSSL=false&serverTimezone=UTC
+          username: root
+          password: m#anq9eFiMZl
+      p6spy: off # 线上环境关闭
+    url: ${spring.datasource.dynamic.datasource.master_1.url}
+    username: ${spring.datasource.dynamic.datasource.master_1.username}
+    password: ${spring.datasource.dynamic.datasource.master_1.password}
+    driver-class-name: ${spring.datasource.dynamic.datasource.master_1.driver-class-name}
+  main:
+    banner-mode: console
+    web-application-type: NONE
+
+
+mybatis-plus:
+  configuration:
+    #控制台显示mysql
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      #配置逻辑删除字段为1是删除
+      logic-delete-value: 1
+      #配置逻辑删除字段为0是未删除
+      logic-not-delete-value: 0
+chint:
+  goldsun:
+    listenPort: 32032
+  http:
+    listenPort: 30000
+  websocket:
+    listenPort: 30003
+  ignite:
+    dockerType: test
+    nameSpace: dev-yunpingtai
+    serviceName: chiot-mqtt
+  iot:
+    telemetry:
+      kafka:
+        servers: 10.20.200.235:9092,10.20.200.236:9092,10.20.200.237:9092
+      mqttServerCount: 5
+      topic: iot-telemetry-msg
+  mqtt:
+    listenPort: 1883
+  tcp:
+    listenPort: 31000
+  video:
+    data:
+      url: https://dev-rtmp.chintcloud.net/hls/
+  wsmqtt:
+    listenPort: 2883
+  vertx:
+    port: 7777
+    api:
+      prefix: /api/nyx-service/
+    controller:
+      packages: com.chint.dama.vertx.controller
+    verticle:
+      # verticle包路径支持多个(以,逗号分隔)
+      packages: com.chint.dama.verticle
+    filter:
+      packages: com.chint.dama.filter
+      # 白名单
+    url:
+      white-list: /auth/token
+    auth:
+      # Token认证开关
+      opened: false
+    limit:
+      # 限流器开关
+      opened: false
+      # 吞吐率是指每秒多少许可数（通常是指QPS，每秒多少查询）
+      qps: 1000000
+  minio:
+    ak: dev-u01
+    buckets: dev
+    enable: true
+    endpoint: https://minio1.chintcloud.net/
+    sk: CudwNjk9M97k
+

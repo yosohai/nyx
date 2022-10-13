@@ -1,0 +1,11 @@
+package com.chint.iot.protocol.mqtt.protocol;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class WsMqttProtocol extends MqttProtocol {
+
+	public WsMqttProtocol() {
+		protocolFlag = "WebSocket-CHINT";
+	}
+}
